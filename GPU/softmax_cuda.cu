@@ -4,6 +4,9 @@
 
 #include <cuda_runtime.h>
 
+#include <cstring>
+
+
 #define CUDA_CHECK(call)                                                       \
     do {                                                                       \
         cudaError_t err = (call);                                               \
@@ -112,15 +115,34 @@ static bool verify_result(const float *gpu, const float *cpu, int count) {
 }
 
 int main(int argc, char **argv) {
-    int rows = 128;
-    int cols = 1024;
+    int n = 100;
+    int reps = 1;
+    const char *precision = "fp32";
+    const char *measure = "kernel";
 
-    if (argc > 1) {
-        rows = std::atoi(argv[1]);
+    for (int i = 1; i < argc; ++i){
+        if (std::strcmp(argv[i], "--n") == 0 && i + 1 < argc){
+            n = std::atoi(argv[i + 1]);
+            i ++;
+        } else if (std::strcmp(argv[i], "--measure") == 0 && i + 1 < argc){
+            measure = argv[i +1];
+            i ++;
+        } else if (std::strcmp(argv[i], "--precision") == 0 && i + 1 < argc){
+            precision = argv[i + 1];
+            i ++;
+        } else if (std::strcmp(argv[i], "--reps") == 0 && i + 1 < argc){
+            reps = std::atoi(argv[i + 1]);
+            i ++;
+        } 
     }
-    if (argc > 2) {
-        cols = std::atoi(argv[2]);
+
+    if (std::strcmp(precision, "fp32") != 0) {
+        std::fprintf(stderr, "Es una prueba solo con fp32\n");
+        return EXIT_FAILURE;
     }
+
+    int rows = 1;
+    int cols = n;
 
     int count = rows * cols;
     size_t bytes = static_cast<size_t>(count) * sizeof(float);
@@ -156,7 +178,7 @@ int main(int argc, char **argv) {
     CUDA_CHECK(cudaMemcpy(h_output, d_output, bytes, cudaMemcpyDeviceToHost));
 
     bool ok = verify_result(h_output, h_reference, count);
-    std::printf("softmax rows=%d cols=%d: %s\n", rows, cols,
+    std::printf("softmax precision=%s n=%d reps=%d measure=%s: %s\n", precision, n, reps, measure,
                 ok ? "OK" : "ERROR");
 
     CUDA_CHECK(cudaFree(d_input));
