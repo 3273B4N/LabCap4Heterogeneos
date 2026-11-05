@@ -28,7 +28,7 @@ HLS_KERNEL_FILES := $(addprefix $(TEMP_DIR)/,$(HLS_FILES:.cpp=.xo))
 # Setting V++ Flags
 VPP_PFLAGS :=
 VPP_LDFLAGS := --vivado.impl.strategies=Area_Explore 
-VPP_FLAGS += --save-temps --jobs 6
+VPP_FLAGS += --save-temps --jobs 3
 
 # Set the desired clock frequency (e.g., 200 MHz)
 KERNEL_FREQ := 250000000
