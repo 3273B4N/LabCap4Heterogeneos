@@ -63,3 +63,6 @@ sim
 analyzer_input/
 *.spfm
 *.bit.bin
+
+
+SoftMaxHLSKernel/binaries/
