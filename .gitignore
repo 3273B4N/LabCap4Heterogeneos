@@ -1,0 +1,65 @@
+# ---------- Salidas del Makefile (v++) ----------
+tmp.*/
+build.*/
+package.*/
+system.bit
+system.bit.bin
+bootgen.bif
+emconfig.json
+*.xclbin
+*.xo
+
+# ---------- Temporales de v++ / Vitis ----------
+_x*/
+.Xil/
+.ipcache/
+*.compile_summary
+*.link_summary
+*.run_summary
+v++_*.log
+*v++*
+profile_*
+TempConfig/
+system_estimate.xtxt
+dltmp*
+xmltmp*
+qemu-memory-_*
+emulation/
+_vimage/
+start_simulation.sh
+
+# ---------- Logs y reportes de Xilinx ----------
+*.jou
+*.log
+*.wcfg
+*.wdb
+*.rpt
+hs_err_pid*.log
+
+# ---------- Proyectos de Vitis HLS (si usas vitis_hls -f) ----------
+*_prj/
+
+# ---------- Plataforma (pesada y regenerable) ----------
+**/platform/**/*.xsa
+**/platform/**/*.xpfm
+**/platform/sw/
+**/platform/export/
+
+# ---------- Host (compilación) ----------
+*.o
+*.d
+SoftMax
+sim
+
+# ---------- Editor y sistema ----------
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+
+# otros
+analyzer_input/
+*.spfm
+*.bit.bin
