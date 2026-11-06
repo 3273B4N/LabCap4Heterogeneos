@@ -7,6 +7,12 @@
 #include <cstring>
 #include <random>
 
+// Para FP16
+#include <cuda_fp16.h>
+
+//Para  las mediciones
+#include <chrono>
+
 
 #define CUDA_CHECK(call)                                                       \
     do {                                                                       \
@@ -104,17 +110,24 @@ static void softmax_reference(const float *input, double *output, int rows, int 
     }
 }
 
-static bool verify_result(const float *gpu, const double *cpu, int count) {
+static bool verify_result(const float *gpu, const double *cpu, int count, double *max_error) {
+    *max_error = 0.0;
+    bool ok = true;
+
     for (int i = 0; i < count; ++i) {
-        if (std::fabs((double)gpu[i] - cpu[i]) > 1e-4f) {
+        double error = std::fabs((double)gpu[i] - cpu[i]);
+        if (error > *max_error){
+            *max_error = error;
+        }
+        if (error > 1e-4 && ok){
             std::fprintf(stderr,
                          "Error en indice %d: obtenido %.6f, esperado %.6f\n",
                          i, gpu[i], cpu[i]);
-            return false;
+            ok = false;
         }
     }
 
-    return true;
+    return ok;
 }
 
 int main(int argc, char **argv) {
@@ -183,9 +196,37 @@ int main(int argc, char **argv) {
 
     CUDA_CHECK(cudaMemcpy(h_output, d_output, bytes, cudaMemcpyDeviceToHost));
 
-    bool ok = verify_result(h_output, h_reference, count);
-    std::printf("softmax precision=%s n=%d reps=%d measure=%s: %s\n", precision, n, reps, measure,
-                ok ? "OK" : "ERROR");
+    // Aquí se realiza la medición en end-to-end y kernel
+    bool end_to_end = std::strcmp(measure, "end-to-end)") == 0;
+    auto start_time = std::chrono::high_resolution_clock::now();  // Guarda el tiempo inicial 
+
+    for (int rep = 0; rep < reps; ++rep){
+        if (end_to_end){
+            CUDA_CHECK(cudaMemcpy(d_input, h_input, bytes, cudaMemcpyHostToDevice));
+        }
+        softmax_rows_kernel<<<rows, threads_per_block, shared_bytes>>>(
+            d_input, d_output, rows, cols);
+        if (end_to_end){
+            CUDA_CHECK(cudaMemcpy(h_output, d_output, bytes, cudaMemcpyDeviceToHost));
+        }
+    }
+
+    CUDA_CHECK(cudaDeviceSynchronize());
+    
+    auto stop_time = std::chrono::high_resolution_clock::now(); 
+
+    CUDA_CHECK(cudaGetLastError());
+    CUDA_CHECK(cudaMemcpy(h_output, d_output, bytes, cudaMemcpyDeviceToHost));
+
+    double total_ms = std::chrono::duration<double, std::milli>(stop_time - start_time).count();
+
+
+    double max_error;
+    bool ok = verify_result(h_output, h_reference, count, &max_error);
+    std::printf("softmax precision=%s n=%d reps=%d measure=%s: %s max_error=%.3e\n", precision, n, reps, measure,
+                ok ? "OK" : "ERROR", max_error);
+
+    std::printf("%s, %d, %d, %s, %.4f, %.4f, %.3e\n", precision, n, reps, measure, total_ms, total_ms * 1000.0 / reps, max_error);
 
     CUDA_CHECK(cudaFree(d_input));
     CUDA_CHECK(cudaFree(d_output));
