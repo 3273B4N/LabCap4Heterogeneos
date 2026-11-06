@@ -5,6 +5,7 @@
 #include <cuda_runtime.h>
 
 #include <cstring>
+#include <random>
 
 
 #define CUDA_CHECK(call)                                                       \
@@ -72,26 +73,28 @@ __global__ void softmax_rows_kernel(const float *input, float *output, int rows,
     }
 }
 
-static void fill_matrix(float *x, int rows, int cols) {
-    for (int row = 0; row < rows; ++row) {
-        for (int col = 0; col < cols; ++col) {
-            int idx = row * cols + col;
-            x[idx] = 0.01f * static_cast<float>((row * 17 + col * 31) % 101);
-        }
+static void fill_vector(float *x, int n, unsigned seed) {
+    // crear un generador de numeros aleatorio con una semilla fija para que siempre sea el mismo vector 
+    std::mt19937 gen(seed);
+    
+    std::uniform_real_distribution<float> dis(-4.0f, 4.0f);
+
+    for (int i = 0; i < n; ++i){
+        x[i] = dis(gen);
     }
 }
 
-static void cpu_softmax(const float *input, float *output, int rows, int cols) {
+static void softmax_reference(const float *input, double *output, int rows, int cols) {  //rows = 1 porque es un vector 
     for (int row = 0; row < rows; ++row) {
         float max_value = input[row * cols];
         for (int col = 1; col < cols; ++col) {
-            max_value = std::fmax(max_value, input[row * cols + col]);
+            max_value = std::fmax(max_value, (double)input[row * cols + col]);
         }
 
         float sum = 0.0f;
         for (int col = 0; col < cols; ++col) {
             int idx = row * cols + col;
-            output[idx] = std::exp(input[idx] - max_value);
+            output[idx] = std::exp((double)input[idx] - max_value);
             sum += output[idx];
         }
 
@@ -101,9 +104,9 @@ static void cpu_softmax(const float *input, float *output, int rows, int cols) {
     }
 }
 
-static bool verify_result(const float *gpu, const float *cpu, int count) {
+static bool verify_result(const float *gpu, const double *cpu, int count) {
     for (int i = 0; i < count; ++i) {
-        if (std::fabs(gpu[i] - cpu[i]) > 1e-4f) {
+        if (std::fabs((double)gpu[i] - cpu[i]) > 1e-4f) {
             std::fprintf(stderr,
                          "Error en indice %d: obtenido %.6f, esperado %.6f\n",
                          i, gpu[i], cpu[i]);
@@ -117,6 +120,7 @@ static bool verify_result(const float *gpu, const float *cpu, int count) {
 int main(int argc, char **argv) {
     int n = 100;
     int reps = 1;
+    unsigned seed = 20;
     const char *precision = "fp32";
     const char *measure = "kernel";
 
@@ -149,15 +153,17 @@ int main(int argc, char **argv) {
 
     float *h_input = static_cast<float *>(std::malloc(bytes));
     float *h_output = static_cast<float *>(std::malloc(bytes));
-    float *h_reference = static_cast<float *>(std::malloc(bytes));
+    double *h_reference = static_cast<double *>(std::malloc(static_cast<size_t>(count)*sizeof(double)));
 
     if (!h_input || !h_output || !h_reference) {
         std::fprintf(stderr, "No se pudo reservar memoria en CPU\n");
         return EXIT_FAILURE;
     }
 
-    fill_matrix(h_input, rows, cols);
-    cpu_softmax(h_input, h_reference, rows, cols);
+    fill_vector(h_input, n, seed);
+    std::printf("primeros valores del vector: %.4f %.4f %.4f %.4f %.4f\n", h_input[0],h_input[1], h_input[2], h_input[3], h_input[4]);
+
+    softmax_reference(h_input, h_reference, rows, cols);
 
     float *d_input = nullptr;
     float *d_output = nullptr;
