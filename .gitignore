@@ -33,7 +33,6 @@ start_simulation.sh
 *.log
 *.wcfg
 *.wdb
-*.rpt
 hs_err_pid*.log
 
 # ---------- Proyectos de Vitis HLS (si usas vitis_hls -f) ----------
