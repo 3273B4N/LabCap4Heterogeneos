@@ -6,7 +6,6 @@ system.bit
 system.bit.bin
 bootgen.bif
 emconfig.json
-*.xclbin
 *.xo
 
 # ---------- Temporales de v++ / Vitis ----------
@@ -61,7 +60,3 @@ sim
 # otros
 analyzer_input/
 *.spfm
-*.bit.bin
-
-
-SoftMaxHLSKernel/binaries/
