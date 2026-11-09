@@ -3,11 +3,11 @@ ROOT_DIR=$(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET := hw
 PLATFORM := $(ROOT_DIR)/../platform/kv260_custom.xpfm
 
-DESIGN_FILE_NAME = softmax
+DESIGN_FILE_NAME = softmax_hls
 
 # Setting input file
-HLS_FILES := softmax.cpp
-HLS_FILES_NAMES := softmax
+HLS_FILES := softmax_hls.cpp
+HLS_FILE_NAME := $(DESIGN_FILE_NAME)
 
 # Setting directories
 TEMP_DIR := ./tmp.$(TARGET)
@@ -28,16 +28,30 @@ HLS_KERNEL_FILES := $(addprefix $(TEMP_DIR)/,$(HLS_FILES:.cpp=.xo))
 # Setting V++ Flags
 VPP_PFLAGS :=
 VPP_LDFLAGS := --vivado.impl.strategies=Area_Explore 
-VPP_FLAGS += --save-temps --jobs 3
+JOBS ?= 3
+VPP_FLAGS += --save-temps --jobs $(JOBS)
 
 # Set the desired clock frequency (e.g., 200 MHz)
-KERNEL_FREQ := 250000000
+KERNEL_FREQ := 150000000
 
-# TODO: Modify according to yours
 USE_FLOAT32 := 1
 ifdef USE_FLOAT32
 	VPP_FLAGS += -DUSE_FLOAT32
 endif
+
+# optimizaciones
+ifdef USE_PIPELINE
+    VPP_FLAGS += -DUSE_PIPELINE
+endif
+
+ifdef USE_PARTITION
+    VPP_FLAGS += -DUSE_PARTITION
+endif
+
+ifdef USE_DATAFLOW
+    VPP_FLAGS += -DUSE_DATAFLOW
+endif
+
 
 .PHONY: all clean cleanall fpgabin
 
@@ -80,11 +94,11 @@ $(XCL_BIN): $(LINK_OUTPUT)
 	mkdir -p $(PACKAGE_OUT)
 	cp $< $@
 
-$(SHELL_JSON): $(ROOT_DIR)/../../shell.json
+$(SHELL_JSON): $(ROOT_DIR)/../platform/shell.json
 	mkdir -p $(PACKAGE_OUT)
 	cp $< $@
 
-$(DTB_FILE): $(ROOT_DIR)/../../pl.dtbo
+$(DTB_FILE): $(ROOT_DIR)/../platform/pl.dtbo
 	mkdir -p $(PACKAGE_OUT)
 	cp $< $@
 

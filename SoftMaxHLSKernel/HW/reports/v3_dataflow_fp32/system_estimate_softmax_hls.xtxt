@@ -1,0 +1,66 @@
+===============================================================================
+Version:    v++ v2024.1 (64-bit)
+Build:      SW Build 5074859 on 2024-05-20-23:21:20
+Copyright:  Copyright 1986-2024 Xilinx, Inc. All Rights Reserved.
+Created:    Sun Nov  8 16:20:47 2026
+===============================================================================
+
+-------------------------------------------------------------------------------
+Design Name:             softmax_hls
+Target Device:           xilinx:kv260:kv260_hardware_Platform:0.0
+Target Clock:            199.998000MHz
+Total number of kernels: 1
+-------------------------------------------------------------------------------
+
+Kernel Summary
+Kernel Name  Type  Target              OpenCL Library  Compute Units
+-----------  ----  ------------------  --------------  -------------
+softmax_hls  c     fpga0:OCL_REGION_0  softmax_hls     1
+
+
+-------------------------------------------------------------------------------
+OpenCL Binary:     softmax_hls
+Kernels mapped to: clc_region
+
+Timing Information (MHz)
+Compute Unit   Kernel Name  Module Name                         Target Frequency  Estimated Frequency
+-------------  -----------  ----------------------------------  ----------------  -------------------
+softmax_hls_1  softmax_hls  entry_proc                          200               547.94519
+softmax_hls_1  softmax_hls  read_data_Pipeline_VITIS_LOOP_19_1  200               273.972595
+softmax_hls_1  softmax_hls  read_data                           200               273.972595
+softmax_hls_1  softmax_hls  find_max_Pipeline_VITIS_LOOP_34_1   200               220.799301
+softmax_hls_1  softmax_hls  find_max                            200               220.799301
+softmax_hls_1  softmax_hls  comp_exp_Pipeline_VITIS_LOOP_50_1   200               274.423706
+softmax_hls_1  softmax_hls  comp_exp                            200               273.972595
+softmax_hls_1  softmax_hls  norm_exp_Pipeline_VITIS_LOOP_65_1   200               273.972595
+softmax_hls_1  softmax_hls  norm_exp                            200               273.972595
+softmax_hls_1  softmax_hls  softmax_hls                         200               220.799301
+
+Latency Information
+Compute Unit   Kernel Name  Module Name                         Start Interval  Best (cycles)  Avg (cycles)  Worst (cycles)  Best (absolute)  Avg (absolute)  Worst (absolute)
+-------------  -----------  ----------------------------------  --------------  -------------  ------------  --------------  ---------------  --------------  ----------------
+softmax_hls_1  softmax_hls  entry_proc                          0               0              0             0               0 ns             0 ns            0 ns
+softmax_hls_1  softmax_hls  read_data_Pipeline_VITIS_LOOP_19_1  0               undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  read_data                           undef           undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  find_max_Pipeline_VITIS_LOOP_34_1   0               undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  find_max                            undef           undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  comp_exp_Pipeline_VITIS_LOOP_50_1   0               undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  comp_exp                            undef           undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  norm_exp_Pipeline_VITIS_LOOP_65_1   0               undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  norm_exp                            undef           undef          undef         undef           undef            undef           undef
+softmax_hls_1  softmax_hls  softmax_hls                         undef           undef          undef         undef           undef            undef           undef
+
+Area Information
+Compute Unit   Kernel Name  Module Name                         FF     LUT    DSP  BRAM  URAM
+-------------  -----------  ----------------------------------  -----  -----  ---  ----  ----
+softmax_hls_1  softmax_hls  entry_proc                          2      47     0    0     0
+softmax_hls_1  softmax_hls  read_data_Pipeline_VITIS_LOOP_19_1  628    551    0    0     0
+softmax_hls_1  softmax_hls  read_data                           634    690    0    0     0
+softmax_hls_1  softmax_hls  find_max_Pipeline_VITIS_LOOP_34_1   135    274    0    0     0
+softmax_hls_1  softmax_hls  find_max                            237    347    0    0     0
+softmax_hls_1  softmax_hls  comp_exp_Pipeline_VITIS_LOOP_50_1   1195   1863   0    0     0
+softmax_hls_1  softmax_hls  comp_exp                            1233   1936   0    0     0
+softmax_hls_1  softmax_hls  norm_exp_Pipeline_VITIS_LOOP_65_1   491    323    0    0     0
+softmax_hls_1  softmax_hls  norm_exp                            1170   2565   0    0     0
+softmax_hls_1  softmax_hls  softmax_hls                         10639  12579  0    22    0
+-------------------------------------------------------------------------------
