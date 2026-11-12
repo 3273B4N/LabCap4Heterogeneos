@@ -39,11 +39,9 @@ Para el flujo completo (`make` / `make build`) hacen falta además `emconfigutil
 | `VPP_PFLAGS` | (vacía) | Flags extra para la compilación |
 | `VPP_LDFLAGS` | `--vivado.impl.strategies=Area_Explore` | Flags solo del link (`v++ -l`) |
 | `VPP_FLAGS` | `--save-temps --jobs 3` (+ los `-D...` de abajo) | Flags comunes a compilación y link. Conserva temporales y usa 3 jobs |
-| `KERNEL_FREQ` | `250000000` | Frecuencia del reloj del kernel en Hz (`--clock.defaultFreqHz`). El comentario del Makefile dice "200 MHz", pero el valor es 250 MHz |
+| `KERNEL_FREQ` | `250000000` | Frecuencia del reloj del kernel en Hz (`--clock.defaultFreqHz`).|
 
 ### Macros de diseño
-
-Cada una se activa con `ifdef` (basta con que la variable tenga cualquier valor no vacío) y agrega un `-D` a `VPP_FLAGS`:
 
 | Variable | Valor por defecto | Agrega | Efecto |
 |---|---|---|---|
@@ -86,30 +84,9 @@ El comando es siempre el mismo objetivo, `make tmp.hw/softmax_hls.xo`, con las m
 | `v3_dataflow` | `make USE_FLOAT32= USE_PIPELINE=1 USE_PARTITION=1 USE_DATAFLOW=1 tmp.hw/softmax_hls.xo` |
 
 
-## 5. Dónde queda el reporte
+## 5. Dónde queda el resultados
 
-**N/D.** El Makefile no define dónde queda el reporte de síntesis: no usa `--report_dir` ni menciona la ruta del `*_csynth.rpt` (se buscó en todo el archivo). Lo único relacionado es la regla `clean`, que borra `*.rpt` y `system_estimate.xtxt` del directorio actual. Como v++ se invoca con `--temp_dir ./tmp.hw` y `--save-temps`, lo esperable es que los reportes de Vitis HLS queden dentro de `tmp.hw`; la ruta exacta no se pudo verificar con los archivos entregados. Para ubicarlos:
-
-```bash
-find tmp.hw -name 'softmax_hls_csynth.rpt'
-find . -name 'system_estimate_softmax_hls.xtxt' -not -path './reports/*'
-```
-
-Los reportes de este proyecto se guardan en `reports/<variante>_<tipo>/`, por ejemplo `reports/v1_pipeline_fp32/`, con estos dos archivos:
-
-- `softmax_hls_csynth.rpt`
-- `system_estimate_softmax_hls.xtxt`
-
-Ejemplo para copiarlos al terminar una compilación:
-
-```bash
-V=v1_pipeline_fp32
-mkdir -p reports/$V
-cp "$(find tmp.hw -name 'softmax_hls_csynth.rpt' | head -n 1)" reports/$V/
-cp "$(find . -name 'system_estimate_softmax_hls.xtxt' -not -path './reports/*' | head -n 1)" reports/$V/
-```
-
-Copiar los reportes **antes** de correr `make clean` o `make cleanall`, porque ambos pueden borrarlos.
+Los reportes de este proyecto se guardan en `reports/<variante>_<tipo>/`, por ejemplo `reports/v1_pipeline_fp32/`.Copiar los reportes **antes** de correr `make clean` o `make cleanall`, porque ambos pueden borrarlos.
 
 ## 6. Advertencia: borrar `tmp.hw` al cambiar de variante o de tipo de dato
 > **Antes de compilar otra variante, o el mismo diseño en otro tipo de dato, borrar `tmp.hw`:**
