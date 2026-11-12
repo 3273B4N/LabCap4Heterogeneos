@@ -1,3 +1,5 @@
+# LabCap4Heterogeneos
+
 ## Ejercicio D: Energía
 
 Para determinar el consumo energético, la energía de cada llamada a la función se calculó multiplicando la potencia por el tiempo de ejecución. Asimismo, la energía por elemento se obtuvo dividiendo la energía de cada llamada entre la cantidad de elementos (N):
