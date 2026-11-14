@@ -1,0 +1,8 @@
+primeros valores del vector: 0.7050 3.0993 3.1817 3.6353 3.1322
+fp16, 10, 10000, function, 6.1403, 0.6140, 1.527e-04, 0, 6.630e-04, 0.9998506
+fp16, 10, 10000, function, 5.3998, 0.5400, 1.527e-04, 1, 6.630e-04, 0.9998506
+fp16, 10, 10000, function, 5.2879, 0.5288, 1.527e-04, 2, 6.630e-04, 0.9998506
+fp16, 10, 10000, function, 5.2854, 0.5285, 1.527e-04, 3, 6.630e-04, 0.9998506
+fp16, 10, 10000, function, 5.3002, 0.5300, 1.527e-04, 4, 6.630e-04, 0.9998506
+softmax precision=fp16 n=10 reps=10000 measure=function: OK max_error=1.527e-04 rel_error=6.630e-04
+us por llamada: mediana 0.5300  min 0.5285  max 0.6140

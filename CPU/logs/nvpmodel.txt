@@ -1,0 +1,3 @@
+NVPM WARN: fan mode is not set!
+NV Power Mode: 5W
+1

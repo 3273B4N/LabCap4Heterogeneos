@@ -1,0 +1,8 @@
+primeros valores del vector: 0.7050 3.0993 3.1817 3.6353 3.1322
+fp16sum, 1000, 10000, program, 567.4834, 56.7483, 8.450e-05, 0, 2.280e-02, 1.0112829
+fp16sum, 1000, 10000, program, 567.6271, 56.7627, 8.450e-05, 1, 2.280e-02, 1.0112829
+fp16sum, 1000, 10000, program, 567.9695, 56.7970, 8.450e-05, 2, 2.280e-02, 1.0112829
+fp16sum, 1000, 10000, program, 567.5431, 56.7543, 8.450e-05, 3, 2.280e-02, 1.0112829
+fp16sum, 1000, 10000, program, 567.6894, 56.7689, 8.450e-05, 4, 2.280e-02, 1.0112829
+softmax precision=fp16sum n=1000 reps=10000 measure=program: ERROR max_error=8.450e-05 rel_error=2.280e-02
+us por llamada: mediana 56.7627  min 56.7483  max 56.7970

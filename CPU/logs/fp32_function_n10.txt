@@ -1,0 +1,8 @@
+primeros valores del vector: 0.7050 3.0993 3.1817 3.6353 3.1322
+fp32, 10, 10000, function, 4.9598, 0.4960, 1.679e-08, 0, 1.553e-07, 1.0000001
+fp32, 10, 10000, function, 4.9343, 0.4934, 1.679e-08, 1, 1.553e-07, 1.0000001
+fp32, 10, 10000, function, 5.1122, 0.5112, 1.679e-08, 2, 1.553e-07, 1.0000001
+fp32, 10, 10000, function, 4.9493, 0.4949, 1.679e-08, 3, 1.553e-07, 1.0000001
+fp32, 10, 10000, function, 4.9366, 0.4937, 1.679e-08, 4, 1.553e-07, 1.0000001
+softmax precision=fp32 n=10 reps=10000 measure=function: OK max_error=1.679e-08 rel_error=1.553e-07
+us por llamada: mediana 0.4949  min 0.4934  max 0.5112
