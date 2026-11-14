@@ -1,20 +1,17 @@
-# List of source files and corresponding executables
-SOURCES := SoftMax.cpp
-EXECUTABLES := SoftMax
+BENCH := bench_fp32 bench_fp16
 
-CFLAGS := -I/usr/include -Wall -std=c++17 -O0 -g -I.
-LDFLAGS := -L/opt/xilinx/xrt/lib -pthread -lxrt_core -lxrt_coreutil
+CFLAGS := -std=c++17 -O2 -I/usr/include/xrt
+LDFLAGS := -L/opt/xilinx/xrt/lib -lxrt_coreutil -lpthread
 
 .PHONY: all clean
 
-# Default target to build all executables
-all: $(EXECUTABLES)
+all: $(BENCH)
 
-# Rule to build each executable from its corresponding source file
-$(EXECUTABLES): %: %.cpp
-	$(CXX) -o $@ $< $(CFLAGS) $(LDFLAGS)
+bench_fp32: bench_softmax.cpp
+	$(CXX) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
-# Clean target to remove all executables
+bench_fp16: bench_softmax.cpp
+	$(CXX) $(CFLAGS) -DFP16 $< -o $@ $(LDFLAGS)
+
 clean:
-	$(RM) $(EXECUTABLES)
-
+	$(RM) $(BENCH)
